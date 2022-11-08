@@ -1,9 +1,8 @@
 import { useRef } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import SearchIllustration from "../assets/search-illustration.svg";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 
 interface PersonInfo {
   id: string;
@@ -23,6 +22,7 @@ interface PersonListInfo {
 type APIResponse = PersonInfo[] | PersonListInfo[] | { error: string };
 
 const Home = () => {
+  const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = async () => {
@@ -39,8 +39,10 @@ const Home = () => {
         setTimeout(() => {
           searchPeople(searchInputRef.current!.value)
             .then((result) => {
-              console.log(result);
               Swal.close();
+              if (result.length > 1) {
+                return navigate("/search", { state: result });
+              }
             })
             .catch((error) => {
               Swal.fire({
@@ -57,7 +59,9 @@ const Home = () => {
     });
   };
 
-  const searchPeople = (query: string) => {
+  const searchPeople = (
+    query: string
+  ): Promise<PersonInfo[] | PersonListInfo[]> => {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(
@@ -74,7 +78,7 @@ const Home = () => {
         if (response.status != 200) {
           return reject((body as { error: string }).error);
         }
-        return resolve(body);
+        return resolve(body as PersonInfo[] | PersonListInfo[]);
       } catch (error) {
         return reject(error);
       }
@@ -82,49 +86,45 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-auto">
-      <Header />
-      <main className="bg-[#F1F4F9] flex-1 flex items-center flex-col justify-center gap-8">
-        <div className="flex flex-col md:flex-row gap-8 w-full max-w-3xl items-center justify-between">
-          <h3 className="text-2xl text-right md:text-5xl">
-            Search People &<br />
-            Public Records
-          </h3>
-          <img className="md:w-full max-w-[320px]" src={SearchIllustration} />
-        </div>
+    <main className="bg-[#F1F4F9] flex-1 flex items-center flex-col justify-center gap-8">
+      <div className="flex flex-col md:flex-row gap-8 w-full max-w-3xl items-center justify-between">
+        <h3 className="text-2xl text-right md:text-5xl">
+          Search People &<br />
+          Public Records
+        </h3>
+        <img className="md:w-full max-w-[320px]" src={SearchIllustration} />
+      </div>
 
-        <div className="flex items-center justify-center flex-col gap-5 w-full mb-4 md:flex-row">
-          <label
-            className="w-full max-w-[90%] flex items-center justify-center md:max-w-[800px]"
-            htmlFor="search"
-          >
-            <div className="border border-[#CFE1FB] text-[#778396] rounded-md flex items-center gap-2 py-2 px-4 flex-1">
-              <AiOutlineSearch className="text-xl md:text-2xl" />
-              <input
-                className="uppercase flex-1 bg-transparent outline-none "
-                ref={searchInputRef}
-                autoFocus
-                id="search"
-                placeholder="Search"
-              />
-              <button
-                className="text-white bg-[#0368FF] py-3 px-6 rounded-md hidden md:block"
-                onClick={handleSearch}
-              >
-                Search
-              </button>
-            </div>
-          </label>
-          <button
-            className="text-white bg-[#0368FF] py-3 px-6 rounded-md md:hidden"
-            onClick={handleSearch}
-          >
-            Search
-          </button>
-        </div>
-      </main>
-      <Footer />
-    </div>
+      <div className="flex items-center justify-center flex-col gap-5 w-full mb-4 md:flex-row">
+        <label
+          className="w-full max-w-[90%] flex items-center justify-center md:max-w-[800px]"
+          htmlFor="search"
+        >
+          <div className="border border-[#CFE1FB] text-[#778396] rounded-md flex items-center gap-2 py-2 px-4 flex-1">
+            <AiOutlineSearch className="text-xl md:text-2xl" />
+            <input
+              className="uppercase flex-1 bg-transparent outline-none "
+              ref={searchInputRef}
+              autoFocus
+              id="search"
+              placeholder="Search"
+            />
+            <button
+              className="text-white bg-[#0368FF] py-3 px-6 rounded-md hidden md:block"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+          </div>
+        </label>
+        <button
+          className="text-white bg-[#0368FF] py-3 px-6 rounded-md md:hidden"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
+      </div>
+    </main>
   );
 };
 
