@@ -1,9 +1,86 @@
+import { useRef } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
+import Swal from "sweetalert2";
 import SearchIllustration from "./assets/search-illustration.svg";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
+interface PersonInfo {
+  id: string;
+  name: string;
+  dateOfBirth: string;
+  age: string;
+  idExpiration?: string;
+  deceased: boolean;
+}
+
+interface PersonListInfo {
+  id: string;
+  name: string;
+  deceased: boolean;
+}
+
+type APIResponse = PersonInfo[] | PersonListInfo[] | { error: string };
+
 const App = () => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearch = async () => {
+    if (!searchInputRef.current || searchInputRef.current.value == "") {
+      return;
+    }
+
+    Swal.fire({
+      title: "Searching",
+      heightAuto: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading(null);
+        setTimeout(() => {
+          searchPeople(searchInputRef.current!.value)
+            .then((result) => {
+              console.log(result);
+              Swal.close();
+            })
+            .catch((error) => {
+              Swal.fire({
+                title: "Error",
+                icon: "error",
+                timer: 2000,
+                timerProgressBar: true,
+                heightAuto: false,
+                html: error,
+              });
+            });
+        }, 500);
+      },
+    });
+  };
+
+  const searchPeople = (query: string) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/tse`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query,
+            }),
+          }
+        );
+        const body = (await response.json()) as APIResponse;
+        if (response.status != 200) {
+          return reject((body as { error: string }).error);
+        }
+        return resolve(body);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col h-full overflow-auto">
       <Header />
@@ -25,16 +102,23 @@ const App = () => {
               <AiOutlineSearch className="text-xl md:text-2xl" />
               <input
                 className="uppercase flex-1 bg-transparent outline-none "
+                ref={searchInputRef}
                 autoFocus
                 id="search"
                 placeholder="Search"
               />
-              <button className="text-white bg-[#0368FF] py-3 px-6 rounded-md hidden md:block">
+              <button
+                className="text-white bg-[#0368FF] py-3 px-6 rounded-md hidden md:block"
+                onClick={handleSearch}
+              >
                 Search
               </button>
             </div>
           </label>
-          <button className="text-white bg-[#0368FF] py-3 px-6 rounded-md md:hidden">
+          <button
+            className="text-white bg-[#0368FF] py-3 px-6 rounded-md md:hidden"
+            onClick={handleSearch}
+          >
             Search
           </button>
         </div>
