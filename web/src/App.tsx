@@ -1,15 +1,11 @@
 import { AiOutlineSearch } from "react-icons/ai";
 import SearchIllustration from "./assets/search-illustration.svg";
+import Header from "./components/Header";
 
 const App = () => {
   return (
     <div className="flex flex-col h-full overflow-auto">
-      <header className="flex items-center justify-center p-4">
-        <a href="">
-          <img src="/walleye.svg" alt="" />
-        </a>
-        <A className="hidden md:flex px-4" />
-      </header>
+      <Header />
       <main className="bg-[#F1F4F9] flex-1 flex items-center flex-col justify-center gap-8">
         <div className="flex flex-col md:flex-row gap-8 w-full max-w-3xl items-center justify-between">
           <h3 className="text-2xl text-right md:text-5xl">
