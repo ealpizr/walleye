@@ -1,4 +1,4 @@
-import SearchIcon from "./assets/search-icon.svg";
+import { AiOutlineSearch } from "react-icons/ai";
 import SearchIllustration from "./assets/search-illustration.svg";
 
 const App = () => {
@@ -24,10 +24,10 @@ const App = () => {
             className="w-full max-w-[90%] flex items-center justify-center md:max-w-[800px]"
             htmlFor="search"
           >
-            <div className="border border-[#CFE1FB] rounded-md flex gap-1 p-2 flex-1">
-              <img src={SearchIcon} />
+            <div className="border border-[#CFE1FB] text-[#778396] rounded-md flex items-center gap-2 py-2 px-4 flex-1">
+              <AiOutlineSearch className="text-xl md:text-2xl" />
               <input
-                className="uppercase flex-1 bg-transparent outline-none text-[#778396]"
+                className="uppercase flex-1 bg-transparent outline-none "
                 autoFocus
                 id="search"
                 placeholder="Search"
