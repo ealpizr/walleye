@@ -1,5 +1,6 @@
 import { AiOutlineSearch } from "react-icons/ai";
 import SearchIllustration from "./assets/search-illustration.svg";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
 
 const App = () => {
@@ -38,25 +39,7 @@ const App = () => {
           </button>
         </div>
       </main>
-      <footer className="md:hidden py-4 px-2">
-        <A />
-      </footer>
-    </div>
-  );
-};
-
-const A = ({ className = "" }) => {
-  return (
-    <div className={`w-full flex justify-between items-center ${className}`}>
-      <p className="text-lg">Walleye</p>
-      <ul className="flex gap-4">
-        <li>
-          <a href="">API</a>
-        </li>
-        <li>
-          <a href="">Github</a>
-        </li>
-      </ul>
+      <Footer />
     </div>
   );
 };
