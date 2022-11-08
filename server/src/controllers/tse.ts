@@ -1,12 +1,19 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import puppeteer, { Page } from "puppeteer";
+import { ApiError } from "../middleware/errors";
 
 interface PersonInfo {
   id: string;
   name: string;
   dateOfBirth: string;
   age: string;
-  idExpiration: string;
+  idExpiration?: string;
+  deceased: boolean;
+}
+
+interface PersonListInfo {
+  id: string;
+  name: string;
   deceased: boolean;
 }
 
@@ -18,37 +25,41 @@ interface TSERequest extends Request {
   body: RequestBody;
 }
 
-type TSEResponse = PersonInfo | { error: string } | {};
+type TSEResponse = PersonInfo[] | PersonListInfo[];
 
 const isNumber = (s: any) => !isNaN(parseFloat(s)) && !isNaN(s - 0);
 
-const tseController = async (req: TSERequest, res: Response<TSEResponse>) => {
-  const { query } = req.body;
+const tseController = async (
+  req: TSERequest,
+  res: Response<TSEResponse>,
+  next: NextFunction
+) => {
+  try {
+    const { query } = req.body;
 
-  if (!query) {
-    return res.status(400).json({
-      error: "query is required",
-    });
-  }
-
-  // Check if query is ID
-  if (isNumber(query)) {
-    // IDs must be 9 digits long
-    if (query.length < 9) {
-      return res.status(400).json({
-        error: "id must be 9 digits long",
-      });
+    if (!query) {
+      throw new ApiError(400, "query is required");
     }
-    const data = await queryById(query);
-    return res.status(200).json(data);
+
+    // Check if query is ID
+    if (isNumber(query)) {
+      // IDs must be 9 digits long
+      if (query.length < 9) {
+        throw new ApiError(400, "id must be 9 digits long");
+      }
+      const data = await queryById(query);
+      return res.status(200).json(data);
+    }
+
+    const data = await queryByName(query);
+
+    res.status(200).send(data);
+  } catch (error) {
+    next(error);
   }
-
-  const data = await queryByName(query);
-
-  res.status(200).send(data);
 };
 
-const queryById = async (query: string): Promise<PersonInfo | {}> => {
+const queryById = async (query: string): Promise<PersonInfo[]> => {
   const idInputSelector = "input[name=txtcedula]";
 
   const browser = await puppeteer.launch();
@@ -61,23 +72,14 @@ const queryById = async (query: string): Promise<PersonInfo | {}> => {
   await page.click("input[name=btnConsultaCedula]");
 
   const data = await scrapData(page);
-  return { ...data };
+  return [{ ...data }];
 };
 
-const queryByName = async (
-  query: string
-): Promise<
-  | {}
-  | {
-      id: string;
-      name: string;
-      deceased: boolean;
-    }[]
-> => {
+const queryByName = async (query: string): Promise<PersonListInfo[]> => {
   const splittledQuery = query.split(" ");
 
   if (splittledQuery.length < 3) {
-    return {};
+    throw new ApiError(400, "a name and both last names are required");
   }
 
   const name = splittledQuery.slice(0, -2).join(" ");
@@ -123,10 +125,10 @@ const queryByName = async (
   return data;
 };
 
-const scrapData = async (page: Page): Promise<PersonInfo | {}> => {
+const scrapData = async (page: Page): Promise<PersonInfo> => {
   await page.waitForSelector("#lblnombrecompleto, #lblmensaje1");
   if (page.url().includes("error")) {
-    return {};
+    throw new ApiError(400, "no people found");
   }
 
   const personData = await page.evaluate(() => {
