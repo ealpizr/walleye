@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parse } from "node-html-parser";
-import { isNumber, Override, parseParams } from "../../utils";
+import { isValidID, Override, parseParams } from "../../utils";
 
 type Request = Override<
   NextApiRequest,
@@ -25,7 +25,7 @@ const id = async (req: Request, res: NextApiResponse) => {
     });
   }
 
-  if (!isNumber(query) || query.length < 9) {
+  if (!isValidID(query)) {
     return res.status(400).json({
       message: "id is invalid",
     });
