@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useRef } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import SearchIllustration from "../assets/search-illustration.svg";
+import { isNumber } from "../utils";
 
 interface PersonInfo {
   id: string;
@@ -23,6 +25,7 @@ type APIResponse = PersonInfo[] | PersonListInfo[] | { error: string };
 
 const Home = () => {
   // const navigate = useNavigate();
+  const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = async () => {
@@ -41,10 +44,18 @@ const Home = () => {
             .then((result) => {
               Swal.close();
               if (result.length > 1) {
+                router.push(
+                  {
+                    pathname: "/search",
+                    query: { result: JSON.stringify(result) },
+                  },
+                  "/search"
+                );
                 // return navigate("/search", { state: result });
               }
             })
             .catch((error) => {
+              console.error(error);
               Swal.fire({
                 title: "Error",
                 icon: "error",
@@ -64,16 +75,17 @@ const Home = () => {
   ): Promise<PersonInfo[] | PersonListInfo[]> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/tse`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              query,
-            }),
-          }
-        );
+        let endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/name`;
+        if (isNumber(query)) {
+          endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/id`;
+        }
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query,
+          }),
+        });
         const body = (await response.json()) as APIResponse;
         if (response.status != 200) {
           return reject((body as { error: string }).error);
