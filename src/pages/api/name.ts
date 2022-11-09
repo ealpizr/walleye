@@ -77,18 +77,22 @@ const id = async (req: Request, res: NextApiResponse) => {
   });
   const root = parse(await response.text());
 
-  res.json(
-    Array.from(
-      root.querySelectorAll("tr > td > span > font > span > label")
-    ).map((e) => {
-      const splitted = e.innerHTML.split(" ");
-      return {
-        id: splitted[1],
-        name: splitted.slice(4).join(" ").replace("     ***Fallecido***", ""),
-        deceased: splitted.splice(-1).includes("***Fallecido***"),
-      };
-    })
-  );
+  const data = Array.from(
+    root.querySelectorAll("tr > td > span > font > span > label")
+  ).map((e) => {
+    const splitted = e.innerHTML.split(" ");
+    return {
+      id: splitted[1],
+      name: splitted.slice(4).join(" ").replace("     ***Fallecido***", ""),
+      deceased: splitted.splice(-1).includes("***Fallecido***"),
+    };
+  });
+
+  if (data.length === 0) {
+    return res.status(404).json([]);
+  }
+
+  res.status(200).json(data);
 };
 
 export default id;
