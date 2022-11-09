@@ -61,13 +61,19 @@ const id = async (req: Request, res: NextApiResponse) => {
   });
   const root = parse(await response.text());
 
-  res.json({
+  const data = {
     id: root.getElementById("lblcedula")?.innerText,
     name: root.getElementById("lblnombrecompleto")?.innerText,
     dateOfBirth: root.getElementById("lblfechaNacimiento")?.innerText,
     age: root.getElementById("lbledad")?.innerText,
     deceased: root.getElementById("lbldefuncion2")?.innerText !== "",
-  });
+  };
+
+  if (!data.id) {
+    return res.status(404).json([]);
+  }
+
+  return res.status(200).json(data);
 };
 
 export default id;
