@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import SearchIllustration from "../assets/search-illustration.svg";
+import { TSEService } from "../services";
 import { isNumber } from "../utils";
 
 interface PersonInfo {
@@ -21,7 +22,7 @@ interface PersonListInfo {
   deceased: boolean;
 }
 
-type APIResponse = PersonInfo[] | PersonListInfo[] | { message: string };
+type APIResponse = PersonInfo | PersonListInfo[] | { message: string };
 
 const Home = () => {
   // const navigate = useNavigate();
@@ -29,42 +30,49 @@ const Home = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = async () => {
-    if (!searchInputRef.current || searchInputRef.current.value == "") {
-      return;
-    }
-
     Swal.fire({
       title: "Searching",
       heightAuto: false,
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading(null);
-        setTimeout(() => {
-          searchPeople(searchInputRef.current!.value)
-            .then((result) => {
-              Swal.close();
-              if (result.length > 1) {
-                router.push(
-                  {
-                    pathname: "/search",
-                    query: { result: JSON.stringify(result) },
-                  },
-                  "/search"
-                );
-                // return navigate("/search", { state: result });
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              Swal.fire({
-                title: "Error",
-                icon: "error",
-                timer: 2000,
-                timerProgressBar: true,
-                heightAuto: false,
-                html: error,
-              });
+        setTimeout(async () => {
+          try {
+            if (!searchInputRef.current || searchInputRef.current.value == "") {
+              return Swal.close();
+            }
+            const query = searchInputRef.current.value;
+
+            if (isNumber(query)) {
+              const result = await TSEService.queryByID(query);
+              router.push(`/${result.id}`);
+              return Swal.close();
+            }
+
+            const results = await TSEService.queryByName(query);
+            if (results.length === 1 && results[0]) {
+              router.push(`/${results[0].id}`);
+              return Swal.close();
+            }
+            router.push(
+              {
+                pathname: "/search",
+                query: { results: JSON.stringify(results) },
+              },
+              "/search"
+            );
+            Swal.close();
+          } catch (error) {
+            console.error(error);
+            Swal.fire({
+              title: "Error",
+              icon: "error",
+              timer: 2000,
+              timerProgressBar: true,
+              heightAuto: false,
+              html: error as string,
             });
+          }
         }, 500);
       },
     });
@@ -72,7 +80,7 @@ const Home = () => {
 
   const searchPeople = (
     query: string
-  ): Promise<PersonInfo[] | PersonListInfo[]> => {
+  ): Promise<PersonInfo | Partial<PersonInfo>[]> => {
     return new Promise(async (resolve, reject) => {
       try {
         let endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/name`;
@@ -90,7 +98,10 @@ const Home = () => {
         if (response.status != 200) {
           return reject((body as { message: string }).message);
         }
-        return resolve(body as PersonInfo[] | PersonListInfo[]);
+        if (Array.isArray(body) && body.length == 1) {
+          return resolve(body[0] as PersonInfo);
+        }
+        return resolve(body as PersonInfo | Partial<PersonInfo>[]);
       } catch (error) {
         return reject(error);
       }

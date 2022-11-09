@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parse } from "node-html-parser";
-import type { TSEData } from "../../types";
-import type { Override } from "../../utils";
-import { isValidID, parseParams } from "../../utils";
+import type { TSEData } from "../../../types";
+import type { Override } from "../../../utils";
+import { isValidID, parseParams } from "../../../utils";
 
 type Request = Override<
   NextApiRequest,

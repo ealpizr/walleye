@@ -14,11 +14,11 @@ const Search = () => {
 
   useEffect(() => {
     (() => {
-      const { result } = router.query;
-      if (!result) {
+      const { results } = router.query;
+      if (!results) {
         return router.push("/");
       }
-      setData(JSON.parse(result as string) as PersonListInfo[]);
+      setData(JSON.parse(results as string) as PersonListInfo[]);
     })();
   }, [router.query]);
 
