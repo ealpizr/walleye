@@ -21,7 +21,7 @@ interface PersonListInfo {
   deceased: boolean;
 }
 
-type APIResponse = PersonInfo[] | PersonListInfo[] | { error: string };
+type APIResponse = PersonInfo[] | PersonListInfo[] | { message: string };
 
 const Home = () => {
   // const navigate = useNavigate();
@@ -88,7 +88,7 @@ const Home = () => {
         });
         const body = (await response.json()) as APIResponse;
         if (response.status != 200) {
-          return reject((body as { error: string }).error);
+          return reject((body as { message: string }).message);
         }
         return resolve(body as PersonInfo[] | PersonListInfo[]);
       } catch (error) {

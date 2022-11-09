@@ -70,7 +70,7 @@ const id = async (req: Request, res: NextApiResponse) => {
   };
 
   if (!data.id) {
-    return res.status(404).json([]);
+    return res.status(404).json({ message: "no records found" });
   }
 
   return res.status(200).json(data);

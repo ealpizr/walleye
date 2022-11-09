@@ -89,7 +89,7 @@ const id = async (req: Request, res: NextApiResponse) => {
   });
 
   if (data.length === 0) {
-    return res.status(404).json([]);
+    return res.status(404).json({ message: "no records found" });
   }
 
   res.status(200).json(data);
