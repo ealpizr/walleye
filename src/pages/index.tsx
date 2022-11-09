@@ -7,25 +7,7 @@ import SearchIllustration from "../assets/search-illustration.svg";
 import { TSEService } from "../services";
 import { isNumber } from "../utils";
 
-interface PersonInfo {
-  id: string;
-  name: string;
-  dateOfBirth: string;
-  age: string;
-  idExpiration?: string;
-  deceased: boolean;
-}
-
-interface PersonListInfo {
-  id: string;
-  name: string;
-  deceased: boolean;
-}
-
-type APIResponse = PersonInfo | PersonListInfo[] | { message: string };
-
 const Home = () => {
-  // const navigate = useNavigate();
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,36 +57,6 @@ const Home = () => {
           }
         }, 500);
       },
-    });
-  };
-
-  const searchPeople = (
-    query: string
-  ): Promise<PersonInfo | Partial<PersonInfo>[]> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/name`;
-        if (isNumber(query)) {
-          endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/id`;
-        }
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            query,
-          }),
-        });
-        const body = (await response.json()) as APIResponse;
-        if (response.status != 200) {
-          return reject((body as { message: string }).message);
-        }
-        if (Array.isArray(body) && body.length == 1) {
-          return resolve(body[0] as PersonInfo);
-        }
-        return resolve(body as PersonInfo | Partial<PersonInfo>[]);
-      } catch (error) {
-        return reject(error);
-      }
     });
   };
 
