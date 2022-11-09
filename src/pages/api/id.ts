@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parse } from "node-html-parser";
-import { isValidID, Override, parseParams } from "../../utils";
+import type { TSEData } from "../../types";
+import type { Override } from "../../utils";
+import { isValidID, parseParams } from "../../utils";
 
 type Request = Override<
   NextApiRequest,
@@ -16,7 +18,10 @@ const requestEndpoint =
 const resultEndpoint =
   "https://servicioselectorales.tse.go.cr/chc/resultado_persona.aspx";
 
-const id = async (req: Request, res: NextApiResponse) => {
+const id = async (
+  req: Request,
+  res: NextApiResponse<TSEData | { message: string }>
+) => {
   const { query } = req.body;
 
   if (!query) {
