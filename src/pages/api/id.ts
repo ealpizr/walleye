@@ -25,7 +25,7 @@ const id = async (req: Request, res: NextApiResponse) => {
     });
   }
 
-  if (!isNumber(query) || query.length > 9) {
+  if (!isNumber(query) || query.length < 9) {
     return res.status(400).json({
       message: "id is invalid",
     });
