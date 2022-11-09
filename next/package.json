@@ -13,6 +13,8 @@
     "node-html-parser": "^6.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.6.0",
+    "sweetalert2": "^11.6.7",
     "zod": "^3.18.0"
   },
   "devDependencies": {
