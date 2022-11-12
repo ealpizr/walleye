@@ -147,8 +147,8 @@ const id = async (
     age: root.getElementById("lbledad")?.innerText,
     deceased: root.getElementById("lbldefuncion2")?.innerText !== "",
     father: {
-      id: root.getElementById("lblnombremadre")?.innerText || "",
-      name: root.getElementById("lblid_padre")?.innerText || "",
+      id: root.getElementById("lblid_padre")?.innerText || "",
+      name: root.getElementById("lblnombrepadre")?.innerText || "",
     },
     mother: {
       id: root.getElementById("lblid_madre")?.innerText || "",
