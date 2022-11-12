@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { SyncLoader } from "react-spinners";
 import { TSEService } from "../services";
 import type { TSEData } from "../types";
 import { isValidID } from "../utils";
@@ -35,7 +36,8 @@ const Result = () => {
   return (
     <>
       {!data ? (
-        <div className="flex h-full items-center justify-center">
+        <div className="flex h-full flex-col items-center justify-center gap-10">
+          <SyncLoader />
           <p className="text-xl">Loading...</p>
         </div>
       ) : (
