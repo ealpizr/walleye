@@ -97,9 +97,9 @@ const id = async (
     })
     .map((child) => {
       return {
-        id: child[0],
-        name: child[2],
-        dateOfBirth: child[1],
+        id: child[0] || "",
+        name: child[2] || "",
+        dateOfBirth: child[1] || "",
       };
     });
 
@@ -135,8 +135,8 @@ const id = async (
     })
     .map((marriage) => {
       return {
-        date: marriage[0],
-        type: marriage[1],
+        date: marriage[0] || "",
+        type: marriage[1] || "",
       };
     });
 
