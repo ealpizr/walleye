@@ -7,6 +7,8 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
+  RNPDIGITAL_EMAIL: z.string().email(),
+  RNPDIGITAL_PASSWORD: z.string().min(1),
 });
 
 /**

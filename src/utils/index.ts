@@ -16,3 +16,13 @@ export const parseParams = (params: {}) =>
       );
     })
     .join("&");
+
+export const parseJSON = async (response: Response) =>
+  JSON.parse((await response.text()).trim());
+
+export const parseCookies = (cookies: string): string => {
+  return cookies
+    .split(",")
+    .map((c) => c.split(";")[0] || "")
+    .join("; ");
+};
