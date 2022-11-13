@@ -27,3 +27,15 @@ export interface TSEData {
 export interface ErrorResponse {
   message?: string;
 }
+
+export interface MHData {
+  regimen: string;
+  status: string;
+  inDebt: boolean;
+  hasIgnoredDeclarations: true;
+  activities: {
+    status: string;
+    code: string;
+    name: string;
+  }[];
+}
