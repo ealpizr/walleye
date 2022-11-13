@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import type { KeyboardEvent } from "react";
 import { useRef } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -10,6 +11,13 @@ import { isNumber } from "../utils";
 const Home = () => {
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == "Enter") {
+      e.preventDefault(); // prevent sweetalert from going crazy
+      handleSearch();
+    }
+  };
 
   const handleSearch = async () => {
     Swal.fire({
@@ -82,6 +90,7 @@ const Home = () => {
           <div className="flex flex-1 items-center gap-2 rounded-md border border-[#CFE1FB] py-2 px-4 text-[#778396]">
             <AiOutlineSearch className="text-xl md:text-2xl" />
             <input
+              onKeyDown={onInputKeyDown}
               className="flex-1 bg-transparent uppercase outline-none "
               ref={searchInputRef}
               autoFocus
