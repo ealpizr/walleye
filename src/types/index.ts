@@ -39,3 +39,7 @@ export interface MHData {
     name: string;
   }[];
 }
+
+export interface CCSSData {
+  asegurado: string;
+}
