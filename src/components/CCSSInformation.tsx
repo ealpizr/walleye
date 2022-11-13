@@ -1,4 +1,5 @@
 import type { CCSSData } from "../types";
+import { Col, Head, Row } from "./display";
 
 interface Props {
   data: CCSSData;
@@ -16,37 +17,6 @@ const CCSSInformation = ({ data }: Props) => {
         </Row>
       </div>
     </section>
-  );
-};
-
-const Head = ({ title }: { title: string }) => {
-  return (
-    <p className="w-full border-b-2 border-blue-400 pb-2 text-center text-lg font-bold">
-      {title}
-    </p>
-  );
-};
-
-const Row = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="flex w-full flex-col justify-evenly gap-2 md:flex-row md:gap-6">
-      {children}
-    </div>
-  );
-};
-
-const Col = ({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
-  title: string;
-}) => {
-  return (
-    <div className="md:text-center">
-      <p className="font-bold text-blue-500">{title}</p>
-      {children}
-    </div>
   );
 };
 
