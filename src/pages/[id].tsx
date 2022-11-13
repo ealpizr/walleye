@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import CCSSInformation from "../components/CCSSInformation";
 import MHInformation from "../components/MHInformation";
 import TSEInformation from "../components/TSEInformation";
-import { MHService, TSEService } from "../services";
-import type { MHData, TSEData } from "../types";
+import { CCSSService, MHService, TSEService } from "../services";
+import type { CCSSData, MHData, TSEData } from "../types";
 import { isValidID } from "../utils";
 
 interface Data {
   tse: TSEData;
   mh: MHData;
+  ccss: CCSSData;
 }
 
 const Result = () => {
@@ -31,7 +33,8 @@ const Result = () => {
         }
         const tseData = await TSEService.queryByID(id);
         const mhData = await MHService.queryByID(id);
-        setData({ tse: tseData, mh: mhData });
+        const ccssData = await CCSSService.queryByID(id);
+        setData({ tse: tseData, mh: mhData, ccss: ccssData });
       } catch (error) {
         console.error(error);
         router.push("/");
@@ -56,6 +59,7 @@ const Result = () => {
               <TabList>
                 <Tab>TSE</Tab>
                 <Tab>MH</Tab>
+                <Tab>CCSS</Tab>
               </TabList>
 
               <TabPanel>
@@ -63,6 +67,9 @@ const Result = () => {
               </TabPanel>
               <TabPanel>
                 <MHInformation data={data.mh} />
+              </TabPanel>
+              <TabPanel>
+                <CCSSInformation data={data.ccss} />
               </TabPanel>
             </Tabs>
           </div>
