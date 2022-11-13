@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BsArrowReturnRight } from "react-icons/bs";
@@ -27,7 +28,11 @@ const Search = () => {
       <h3 className="text-2xl md:text-3xl">Search results</h3>
       <ul className="flex flex-col gap-2">
         {data.map((pi) => {
-          return <PersonInfo key={pi.id} personInfo={pi} />;
+          return (
+            <Link href={`/${pi.id}`} key={pi.id}>
+              <PersonInfo personInfo={pi} />
+            </Link>
+          );
         })}
       </ul>
     </main>
