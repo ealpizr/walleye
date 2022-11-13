@@ -1,13 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+import MHInformation from "../components/MHInformation";
 import TSEInformation from "../components/TSEInformation";
-import { TSEService } from "../services";
-import type { TSEData } from "../types";
+import { MHService, TSEService } from "../services";
+import type { MHData, TSEData } from "../types";
 import { isValidID } from "../utils";
 
 interface Data {
   tse: TSEData;
+  mh: MHData;
 }
 
 const Result = () => {
@@ -26,7 +30,8 @@ const Result = () => {
           throw new Error("The provided ID is invalid");
         }
         const tseData = await TSEService.queryByID(id);
-        setData({ tse: tseData });
+        const mhData = await MHService.queryByID(id);
+        setData({ tse: tseData, mh: mhData });
       } catch (error) {
         console.error(error);
         router.push("/");
@@ -42,11 +47,25 @@ const Result = () => {
           <p className="text-xl">Loading...</p>
         </div>
       ) : (
-        <main className="flex flex-1 flex-col items-center justify-center gap-4 bg-[#F1F4F9] p-6">
+        <main className="flex flex-1 flex-col items-center  gap-4 bg-[#F1F4F9] p-6">
           <div className="text-center">
-            <p className="text-lg font-bold md:text-xl">TSE</p>
+            <p className="text-lg font-bold md:text-xl">{data.tse.name}</p>
           </div>
-          <TSEInformation data={data.tse} />
+          <div className="w-full max-w-[1000px]">
+            <Tabs className="w-full">
+              <TabList>
+                <Tab>TSE</Tab>
+                <Tab>MH</Tab>
+              </TabList>
+
+              <TabPanel>
+                <TSEInformation data={data.tse} />
+              </TabPanel>
+              <TabPanel>
+                <MHInformation data={data.mh} />
+              </TabPanel>
+            </Tabs>
+          </div>
         </main>
       )}
     </>
