@@ -61,6 +61,11 @@ const Result = () => {
                 </Col>
                 <Col title="Edad">
                   <p>{data.tse.age}</p>
+                  {data.tse.deceased && (
+                    <p className="w-fit rounded-lg bg-red-500 py-1 px-2 text-xs font-bold text-white">
+                      FALLECIDO
+                    </p>
+                  )}
                 </Col>
               </Row>
             </div>
