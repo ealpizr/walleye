@@ -1,7 +1,7 @@
 import type { ErrorResponse, TSEData } from "../types";
+import { UNKNOWN_ERROR_MESSAGE } from "../utils/constants";
 
 const TSE_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/tse`;
-const UNKNOWN_ERROR_MESSAGE = "Something wrong happened";
 
 class TSEService {
   static queryByID = (id: string): Promise<TSEData> => {

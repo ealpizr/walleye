@@ -1,6 +1,5 @@
 import type { ErrorResponse, MHData } from "../types";
-
-const UNKNOWN_ERROR_MESSAGE = "Something wrong happened";
+import { UNKNOWN_ERROR_MESSAGE } from "../utils/constants";
 
 class MHService {
   static queryByID = (id: string): Promise<MHData> => {

@@ -1,3 +1,5 @@
+export const UNKNOWN_ERROR_MESSAGE = "Something wrong happened";
+
 export const RNPDIGITAL_API_URL =
   "https://rn.rnpdigital.com/wp-admin/admin-ajax.php";
 
