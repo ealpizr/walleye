@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import { TSEService } from "../services";
 import type { TSEData } from "../types";
@@ -45,108 +45,131 @@ const Result = () => {
           <div className="text-center">
             <p className="text-lg font-bold md:text-xl">TSE</p>
           </div>
-          <section className="flex h-full w-full max-w-[1000px] flex-col items-center">
-            <p className="text-md mb-1 w-full border-b border-blue-400 text-center font-bold md:text-lg">
-              Informacion de la Persona
-            </p>
-            <div className="flex w-full flex-col gap-4">
-              <div className="flex w-full flex-col justify-between gap-4 md:flex-row">
-                <div>
-                  <p>Cédula</p>
+
+          <section className="flex h-full w-full max-w-[1000px] flex-col items-center gap-6 rounded-md bg-white p-6 shadow">
+            <div className="flex w-full flex-col items-center gap-3">
+              <Head title="Informacion de la Persona" />
+              <Row>
+                <Col title="Cédula">
                   <p>{data.tse.id}</p>
-                </div>
-                <div>
-                  <p>Nombre completo</p>
+                </Col>
+                <Col title="Nombre completo">
                   <p>{data.tse.name}</p>
-                </div>
-                <div>
-                  <p>Fecha de Nacimiento</p>
+                </Col>
+                <Col title="Fecha Nacimiento">
                   <p>{data.tse.dateOfBirth}</p>
-                </div>
-                <div>
-                  <p>Edad</p>
+                </Col>
+                <Col title="Edad">
                   <p>{data.tse.age}</p>
-                </div>
-              </div>
-              <div className="flex w-full flex-col justify-between gap-4 md:flex-row">
-                <div>
-                  <p>Cédula del padre</p>
+                </Col>
+              </Row>
+            </div>
+
+            <div className="flex w-full flex-col items-center gap-3">
+              <Head title="Informacion de los Padres" />
+              <Row>
+                <Col title="Cédula del padre">
                   <p>{data.tse.father.id}</p>
-                </div>
-                <div>
-                  <p>Nombre del padre</p>
+                </Col>
+                <Col title="Nombre del padre">
                   <p>{data.tse.father.name}</p>
-                </div>
-                <div>
-                  <p>Cédula de la madre</p>
+                </Col>
+                <Col title="Cédula de la madre">
                   <p>{data.tse.mother.id}</p>
-                </div>
-                <div>
-                  <p>Nombre de la Madre</p>
+                </Col>
+                <Col title="Nombre de la madre">
                   <p>{data.tse.mother.name}</p>
-                </div>
+                </Col>
+              </Row>
+            </div>
+
+            <div className="flex w-full flex-col items-center gap-3">
+              <Head title="Hijos Registrados" />
+              <div className="flex w-full flex-col gap-6">
+                {data.tse.children.length > 0 ? (
+                  <>
+                    {data.tse.children.map((c) => {
+                      return (
+                        <Row key={c.id}>
+                          <Col title="Cédula">
+                            <p>{c.id}</p>
+                          </Col>
+                          <Col title="Nombre completo">
+                            <p>{c.name}</p>
+                          </Col>
+                          <Col title="Fecha de nacimiento">
+                            <p>{c.dateOfBirth}</p>
+                          </Col>
+                        </Row>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <p className="text-center">No tiene hijos registrados</p>
+                )}
               </div>
             </div>
-            <p className="text-md mb-1 w-full border-b border-blue-400 text-center font-bold md:text-lg">
-              Hijos Registrados
-            </p>
-            {data.tse.children.length > 0 ? (
-              <div className="flex w-full flex-col justify-between gap-4">
-                {data.tse.children.map((c) => {
-                  return (
-                    <div
-                      key={c.id}
-                      className="flex w-full flex-row justify-between gap-4"
-                    >
-                      <div>
-                        <p>Cédula</p>
-                        <p>{c.id}</p>
-                      </div>
-                      <div>
-                        <p>Nombre completo</p>
-                        <p>{c.name}</p>
-                      </div>
-                      <div>
-                        <p>Fecha de nacimiento</p>
-                        <p>{c.dateOfBirth}</p>
-                      </div>
-                    </div>
-                  );
-                })}
+
+            <div className="flex w-full flex-col items-center gap-3">
+              <Head title="Matrimonios Registrados" />
+              <div className="flex w-full flex-col gap-2 md:flex-row md:gap-6">
+                {data.tse.marriages.length > 0 ? (
+                  <div className="flex w-full flex-col justify-between gap-4">
+                    {data.tse.marriages.map((c) => {
+                      return (
+                        <Row key={c.date}>
+                          <Col title="Tipo">
+                            <p>{c.type}</p>
+                          </Col>
+                          <Col title="Fecha">
+                            <p>{c.date}</p>
+                          </Col>
+                        </Row>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="w-full text-center">
+                    No tiene matrimonios registrados
+                  </p>
+                )}
               </div>
-            ) : (
-              <p>No tiene hijos registrados</p>
-            )}
-            <p className="text-md mb-1 w-full border-b border-blue-400 text-center font-bold md:text-lg">
-              Matrimonios Registrados
-            </p>
-            {data.tse.marriages.length > 0 ? (
-              <div className="flex w-full flex-col justify-between gap-4">
-                {data.tse.marriages.map((m) => {
-                  return (
-                    <div
-                      key={m.date}
-                      className="flex w-full flex-row justify-between gap-4"
-                    >
-                      <div>
-                        <p>Tipo</p>
-                        <p>{m.type}</p>
-                      </div>
-                      <div>
-                        <p>Fecha</p>
-                        <p>{m.date}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p>No tiene matrimonios registrados</p>
-            )}
+            </div>
           </section>
         </main>
       )}
     </>
+  );
+};
+
+const Head = ({ title }: { title: string }) => {
+  return (
+    <p className="w-full border-b-2 border-blue-400 pb-2 text-center text-lg font-bold">
+      {title}
+    </p>
+  );
+};
+
+const Row = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex w-full flex-col justify-evenly gap-2 md:flex-row md:gap-6">
+      {children}
+    </div>
+  );
+};
+
+const Col = ({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) => {
+  return (
+    <div className="md:text-center">
+      <p className="font-bold text-blue-500">{title}</p>
+      {children}
+    </div>
   );
 };
 
