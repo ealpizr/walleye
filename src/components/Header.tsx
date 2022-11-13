@@ -1,11 +1,13 @@
+import Link from "next/link";
+
 const Header = () => {
   return (
     <header className="flex items-center justify-center p-4">
-      <a href="">
+      <Link href="/">
         <img src="/walleye.svg" alt="" />
-      </a>
+      </Link>
       <div
-        className={`w-full justify-between items-center hidden md:flex px-4`}
+        className={`hidden w-full items-center justify-between px-4 md:flex`}
       >
         <p className="text-lg">Walleye</p>
         <ul className="flex gap-4">
