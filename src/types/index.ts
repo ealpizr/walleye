@@ -43,3 +43,38 @@ export interface MHData {
 export interface CCSSData {
   asegurado: string;
 }
+
+export interface RNPLevantamiento {
+  fechaLevantamiento: string;
+  numeroBoleta: string;
+  descripcionAutoridadJudicial: string;
+}
+
+export interface RNPFinca {
+  canton: string;
+  derecho: string;
+  distrito: string;
+  provincia: string;
+  medida: string;
+  numero: string;
+}
+
+export interface RNPInmueble {
+  name: string;
+  fincas: RNPFinca[];
+}
+
+export interface RNPMueble {
+  fechaInscripcion: string;
+  montoValorHacienda: string;
+  descripcionCodigoBien: string;
+  descripcionEstilo: string;
+  descripcionColor: string;
+  descripcionMarca: string;
+  levantamientos: RNPLevantamiento[];
+}
+
+export interface RNPData {
+  inmuebles: RNPInmueble[];
+  muebles: RNPMueble[];
+}

@@ -2,12 +2,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import parse from "node-html-parser";
 import { env } from "../../env/server.mjs";
 import { getEncryptedPassword, getPublicKey } from "../../helpers/rnp";
+import type {
+  RNPData,
+  RNPInmueble,
+  RNPLevantamiento,
+  RNPMueble,
+} from "../../types/index.js";
 import {
   isValidID,
-  Override,
   parseCookies,
   parseJSON,
   parseParams,
+  type Override,
 } from "../../utils";
 import { RNPDIGITAL_API_URL } from "../../utils/constants";
 
@@ -20,7 +26,7 @@ type Request = Override<
   }
 >;
 
-type APIResponse = any;
+type APIResponse = RNPData | { message: string };
 
 const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
   const { query } = req.body;
@@ -101,7 +107,7 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
     data: { nombre: string; consecIdent: number; numIdent: string }[];
   };
 
-  let inmuebles = [];
+  let inmuebles: RNPInmueble[] = [];
   if (personasInmuebles.success && personasInmuebles.data) {
     inmuebles = await Promise.all(
       personasInmuebles.data.map(async (p) => {
@@ -120,16 +126,25 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
         const response = JSON.parse((await detalleResponse.text()).trim());
         return {
           name: p.nombre,
-          fincas: response.data.fincas.map((f) => {
-            return {
-              canton: f.canton,
-              derecho: f.derechoFormat,
-              distrito: f.distrito,
-              provincia: f.labelProvincia,
-              medida: f.medida,
-              numero: f.numero,
-            };
-          }),
+          fincas: response.data.fincas.map(
+            (f: {
+              canton: string;
+              derechoFormat: string;
+              distrito: string;
+              labelProvincia: string;
+              medida: string;
+              numero: string;
+            }) => {
+              return {
+                canton: f.canton,
+                derecho: f.derechoFormat,
+                distrito: f.distrito,
+                provincia: f.labelProvincia,
+                medida: f.medida,
+                numero: f.numero,
+              };
+            }
+          ),
         };
       })
     );
@@ -155,7 +170,7 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
     data: [{ numeroConsecutivoIdentificacion: string; derechos: any[] }];
   };
 
-  let muebles = [];
+  let muebles: RNPMueble[] = [];
   if (mueblesResponse.success && mueblesResponse.data) {
     muebles = await Promise.all(
       mueblesResponse.data
@@ -191,7 +206,15 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
               descripcionEstilo: v.vehiculo[0].descripcionEstilo,
               descripcionColor: v.vehiculo[0].tipoColor.descripcionColor,
               descripcionMarca: v.vehiculo[0].tipoMarca.descripcionMarca,
-              levantamientos: v.vehiculo[0].levantamientos || [],
+              levantamientos:
+                v.vehiculo[0].levantamientos?.map((l: RNPLevantamiento) => {
+                  return {
+                    fechaLevantamiento: l.fechaLevantamiento,
+                    numeroBoleta: l.numeroBoleta,
+                    descripcionAutoridadJudicial:
+                      l.descripcionAutoridadJudicial,
+                  };
+                }) || [],
             };
           })[0];
         })
