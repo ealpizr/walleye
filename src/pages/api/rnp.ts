@@ -96,29 +96,44 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
   });
   const personasInmuebles = JSON.parse(
     (await personasInmueblesResponse.text()).trim()
-  ) as { data: { nombre: string; consecIdent: number; numIdent: string }[] };
+  ) as {
+    success?: boolean;
+    data: { nombre: string; consecIdent: number; numIdent: string }[];
+  };
 
-  const inmuebles = await Promise.all(
-    personasInmuebles.data.map(async (p) => {
-      const detalleResponse = await fetch(RNPDIGITAL_API_URL, {
-        method: "POST",
-        headers,
-        body: parseParams({
-          ...commonBody,
-          registro: "2",
-          tipoIdent: "1",
-          numIdent: p.numIdent,
-          consecIdent: p.consecIdent,
-          action: "cindpf_pj_detalle_consultas",
-        }),
-      });
-      const response = JSON.parse((await detalleResponse.text()).trim());
-      return {
-        name: p.nombre,
-        fincas: response.data.fincas,
-      };
-    })
-  );
+  let inmuebles = [];
+  if (personasInmuebles.success && personasInmuebles.data) {
+    inmuebles = await Promise.all(
+      personasInmuebles.data.map(async (p) => {
+        const detalleResponse = await fetch(RNPDIGITAL_API_URL, {
+          method: "POST",
+          headers,
+          body: parseParams({
+            ...commonBody,
+            registro: "2",
+            tipoIdent: "1",
+            numIdent: p.numIdent,
+            consecIdent: p.consecIdent,
+            action: "cindpf_pj_detalle_consultas",
+          }),
+        });
+        const response = JSON.parse((await detalleResponse.text()).trim());
+        return {
+          name: p.nombre,
+          fincas: response.data.fincas.map((f) => {
+            return {
+              canton: f.canton,
+              derecho: f.derechoFormat,
+              distrito: f.distrito,
+              provincia: f.labelProvincia,
+              medida: f.medida,
+              numero: f.numero,
+            };
+          }),
+        };
+      })
+    );
+  }
 
   // MUEBLES
   const personasMueblesResponse = await fetch(RNPDIGITAL_API_URL, {
@@ -136,49 +151,52 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
   const mueblesResponse = JSON.parse(
     (await personasMueblesResponse.text()).trim()
   ) as {
+    success?: boolean;
     data: [{ numeroConsecutivoIdentificacion: string; derechos: any[] }];
   };
 
-  const muebles = await Promise.all(
-    mueblesResponse.data
-      .map((v) => {
-        return v.numeroConsecutivoIdentificacion;
-      })
-      .map(async (v) => {
-        const detalleResponse = await fetch(RNPDIGITAL_API_URL, {
-          method: "POST",
-          headers,
-          body: parseParams({
-            ...commonBody,
-            registro: "3",
-            tipoidentificacion: "000001",
-            cedulaPrimeraParte: query[0],
-            cedulaSegundaParte: query.slice(1, 5),
-            cedulaterceraParte: query.slice(5, 9),
-            consecutivoiden: v,
-            action: "cindpf_pj_detalle_consultas",
-          }),
-        });
-        const response = JSON.parse((await detalleResponse.text()).trim());
-        return response.data.derechos.map((z: any) => {
-          const v = z.bienMueble;
-          return {
-            fechaInscripcion: v.fechaInscripcion,
-            montoValorHacienda: v.montoValorHacienda,
-            descripcionCodigoBien: v.tipoCodigo.descripcionCodigoBien,
-            numeroAgnoFabricacion: v.vehiculo.numeroAgnoFabricacion,
-            codigoClaseBien: v.vehiculo.codigoClaseBien,
-            numeroBien: v.vehiculo.numeroBien,
-            numeroChasis: v.vehiculo.numeroChasis,
-            descripcionEstilo: v.vehiculo[0].descripcionEstilo,
-            descripcionColor: v.vehiculo[0].tipoColor.descripcionColor,
-            descripcionMarca: v.vehiculo[0].tipoMarca.descripcionMarca,
-            levantamientos: v.vehiculo[0].levantamientos || [],
-          };
-          return v.bienMueble;
-        });
-      })
-  );
+  let muebles = [];
+  if (mueblesResponse.success && mueblesResponse.data) {
+    muebles = await Promise.all(
+      mueblesResponse.data
+        .map((v) => {
+          return v.numeroConsecutivoIdentificacion;
+        })
+        .map(async (v) => {
+          const detalleResponse = await fetch(RNPDIGITAL_API_URL, {
+            method: "POST",
+            headers,
+            body: parseParams({
+              ...commonBody,
+              registro: "3",
+              tipoidentificacion: "000001",
+              cedulaPrimeraParte: query[0],
+              cedulaSegundaParte: query.slice(1, 5),
+              cedulaterceraParte: query.slice(5, 9),
+              consecutivoiden: v,
+              action: "cindpf_pj_detalle_consultas",
+            }),
+          });
+          const response = JSON.parse((await detalleResponse.text()).trim());
+          return response.data.derechos.map((z: any) => {
+            const v = z.bienMueble;
+            return {
+              fechaInscripcion: v.fechaInscripcion,
+              montoValorHacienda: v.montoValorHacienda,
+              descripcionCodigoBien: v.tipoCodigo.descripcionCodigoBien,
+              numeroAgnoFabricacion: v.vehiculo.numeroAgnoFabricacion,
+              codigoClaseBien: v.vehiculo.codigoClaseBien,
+              numeroBien: v.vehiculo.numeroBien,
+              numeroChasis: v.vehiculo.numeroChasis,
+              descripcionEstilo: v.vehiculo[0].descripcionEstilo,
+              descripcionColor: v.vehiculo[0].tipoColor.descripcionColor,
+              descripcionMarca: v.vehiculo[0].tipoMarca.descripcionMarca,
+              levantamientos: v.vehiculo[0].levantamientos || [],
+            };
+          })[0];
+        })
+    );
+  }
 
   res.send({ inmuebles, muebles });
 };
