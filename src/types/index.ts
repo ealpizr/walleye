@@ -65,6 +65,7 @@ export interface RNPInmueble {
 }
 
 export interface RNPMueble {
+  placa: string;
   fechaInscripcion: string;
   montoValorHacienda: string;
   descripcionCodigoBien: string;
