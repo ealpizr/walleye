@@ -194,15 +194,19 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
           });
           const response = JSON.parse((await detalleResponse.text()).trim());
           return response.data.derechos.map((z: any) => {
+            //return z.bienMueble;
             const v = z.bienMueble;
             return {
+              placa: `${v.codigoClaseBien.trim()}${v.numeroBien.replace(
+                /^0+/,
+                ""
+              )}`,
               fechaInscripcion: v.fechaInscripcion,
               montoValorHacienda: v.montoValorHacienda,
               descripcionCodigoBien: v.tipoCodigo.descripcionCodigoBien,
-              numeroAgnoFabricacion: v.vehiculo.numeroAgnoFabricacion,
-              codigoClaseBien: v.vehiculo.codigoClaseBien,
-              numeroBien: v.vehiculo.numeroBien,
-              numeroChasis: v.vehiculo.numeroChasis,
+              numeroAgnoFabricacion: v.vehiculo[0].numeroAgnoFabricacion,
+              codigoClaseBien: v.vehiculo[0].codigoClaseBien,
+              numeroChasis: v.vehiculo[0].numeroChasis,
               descripcionEstilo: v.vehiculo[0].descripcionEstilo,
               descripcionColor: v.vehiculo[0].tipoColor.descripcionColor,
               descripcionMarca: v.vehiculo[0].tipoMarca.descripcionMarca,
