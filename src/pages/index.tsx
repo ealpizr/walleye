@@ -95,7 +95,7 @@ const Home = () => {
               ref={searchInputRef}
               autoFocus
               id="search"
-              placeholder="Search"
+              placeholder="OSCAR ARIAS SANCHEZ"
             />
             <button
               className="hidden rounded-md bg-[#0368FF] py-3 px-6 text-white md:block"
