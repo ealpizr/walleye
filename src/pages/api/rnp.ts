@@ -4,8 +4,11 @@ import { env } from "../../env/server.mjs";
 import { getEncryptedPassword, getPublicKey } from "../../helpers/rnp";
 import type {
   RNPData,
+  RNPDigitalInmueblesResponse,
+  RNPDigitalMuebleDetalleResponse,
+  RNPDigitalMueblesResponse,
+  RNPDigitalPersonasInmueblesResponse,
   RNPInmueble,
-  RNPLevantamiento,
   RNPMueble,
 } from "../../types/index.js";
 import {
@@ -102,10 +105,7 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
   });
   const personasInmuebles = JSON.parse(
     (await personasInmueblesResponse.text()).trim()
-  ) as {
-    success?: boolean;
-    data: { nombre: string; consecIdent: number; numIdent: string }[];
-  };
+  ) as RNPDigitalPersonasInmueblesResponse;
 
   let inmuebles: RNPInmueble[] = [];
   if (personasInmuebles.success && personasInmuebles.data) {
@@ -123,28 +123,21 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
             action: "cindpf_pj_detalle_consultas",
           }),
         });
-        const response = JSON.parse((await detalleResponse.text()).trim());
+        const response = JSON.parse(
+          (await detalleResponse.text()).trim()
+        ) as RNPDigitalInmueblesResponse;
         return {
           name: p.nombre,
-          fincas: response.data.fincas.map(
-            (f: {
-              canton: string;
-              derechoFormat: string;
-              distrito: string;
-              labelProvincia: string;
-              medida: string;
-              numero: string;
-            }) => {
-              return {
-                canton: f.canton,
-                derecho: f.derechoFormat,
-                distrito: f.distrito,
-                provincia: f.labelProvincia,
-                medida: f.medida,
-                numero: f.numero,
-              };
-            }
-          ),
+          fincas: response.data.fincas.map((f) => {
+            return {
+              canton: f.canton,
+              derecho: f.derechoFormat,
+              distrito: f.distrito,
+              provincia: f.labelProvincia,
+              medida: f.medida.toString(),
+              numero: f.numero.toString(),
+            };
+          }),
         };
       })
     );
@@ -163,65 +156,58 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
     }),
   });
 
-  const mueblesResponse = JSON.parse(
+  const personasMuebles = JSON.parse(
     (await personasMueblesResponse.text()).trim()
-  ) as {
-    success?: boolean;
-    data: [{ numeroConsecutivoIdentificacion: string; derechos: any[] }];
-  };
+  ) as RNPDigitalMueblesResponse;
 
-  let muebles: RNPMueble[] = [];
-  if (mueblesResponse.success && mueblesResponse.data) {
-    muebles = await Promise.all(
-      mueblesResponse.data
-        .map((v) => {
-          return v.numeroConsecutivoIdentificacion;
-        })
-        .map(async (v) => {
-          const detalleResponse = await fetch(RNPDIGITAL_API_URL, {
-            method: "POST",
-            headers,
-            body: parseParams({
-              ...commonBody,
-              registro: "3",
-              tipoidentificacion: "000001",
-              cedulaPrimeraParte: query[0],
-              cedulaSegundaParte: query.slice(1, 5),
-              cedulaterceraParte: query.slice(5, 9),
-              consecutivoiden: v,
-              action: "cindpf_pj_detalle_consultas",
-            }),
+  const muebles: RNPMueble[] = [];
+  if (personasMuebles.success && personasMuebles.data) {
+    await Promise.all(
+      personasMuebles.data.map(async (v) => {
+        const detalleResponse = await fetch(RNPDIGITAL_API_URL, {
+          method: "POST",
+          headers,
+          body: parseParams({
+            ...commonBody,
+            registro: "3",
+            tipoidentificacion: "000001",
+            cedulaPrimeraParte: query[0],
+            cedulaSegundaParte: query.slice(1, 5),
+            cedulaterceraParte: query.slice(5, 9),
+            consecutivoiden: v.numeroConsecutivoIdentificacion,
+            action: "cindpf_pj_detalle_consultas",
+          }),
+        });
+        const response = JSON.parse(
+          (await detalleResponse.text()).trim()
+        ) as RNPDigitalMuebleDetalleResponse;
+        response.data.derechos.forEach((d) => {
+          const v = d.bienMueble;
+          muebles.push({
+            placa: `${v.codigoClaseBien.trim()}${v.numeroBien.replace(
+              /^0+/,
+              ""
+            )}`,
+            fechaInscripcion: v.fechaInscripcion,
+            montoValorHacienda: v.montoValorHacienda.toString(),
+            descripcionCodigoBien: v.tipoCodigo.descripcionCodigoBien,
+            numeroAgnoFabricacion: v.vehiculo[0]?.numeroAgnoFabricacion || "",
+            codigoClaseBien: v.vehiculo[0]?.codigoClaseBien || "",
+            numeroChasis: v.vehiculo[0]?.numeroChasis || "",
+            descripcionEstilo: v.vehiculo[0]?.descripcionEstilo || "",
+            descripcionColor: v.vehiculo[0]?.tipoColor.descripcionColor || "",
+            descripcionMarca: v.vehiculo[0]?.tipoMarca.descripcionMarca || "",
+            levantamientos:
+              v.vehiculo[0]?.levantamientos?.map((l) => {
+                return {
+                  fechaLevantamiento: l.fechaLevantamiento.toString(),
+                  numeroBoleta: l.numeroBoleta,
+                  descripcionAutoridadJudicial: l.descripcionAutoridadJudicial,
+                };
+              }) || [],
           });
-          const response = JSON.parse((await detalleResponse.text()).trim());
-          return response.data.derechos.map((z: any) => {
-            //return z.bienMueble;
-            const v = z.bienMueble;
-            return {
-              placa: `${v.codigoClaseBien.trim()}${v.numeroBien.replace(
-                /^0+/,
-                ""
-              )}`,
-              fechaInscripcion: v.fechaInscripcion,
-              montoValorHacienda: v.montoValorHacienda,
-              descripcionCodigoBien: v.tipoCodigo.descripcionCodigoBien,
-              numeroAgnoFabricacion: v.vehiculo[0].numeroAgnoFabricacion,
-              codigoClaseBien: v.vehiculo[0].codigoClaseBien,
-              numeroChasis: v.vehiculo[0].numeroChasis,
-              descripcionEstilo: v.vehiculo[0].descripcionEstilo,
-              descripcionColor: v.vehiculo[0].tipoColor.descripcionColor,
-              descripcionMarca: v.vehiculo[0].tipoMarca.descripcionMarca,
-              levantamientos:
-                v.vehiculo[0].levantamientos?.map((l: RNPLevantamiento) => {
-                  return {
-                    fechaLevantamiento: l.fechaLevantamiento,
-                    numeroBoleta: l.numeroBoleta,
-                    descripcionAutoridadJudicial:
-                      l.descripcionAutoridadJudicial,
-                  };
-                }) || [],
-            };
-          })[0];
-        })
+        });
+      })
     );
   }
 

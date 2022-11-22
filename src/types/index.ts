@@ -1,3 +1,10 @@
+import type {
+  RNPDigitalInmueblesResponse,
+  RNPDigitalMuebleDetalleResponse,
+  RNPDigitalMueblesResponse,
+  RNPDigitalPersonasInmueblesResponse,
+} from "./rnp";
+
 export interface TSEData {
   id: string;
   name: string;
@@ -79,3 +86,10 @@ export interface RNPData {
   inmuebles: RNPInmueble[];
   muebles: RNPMueble[];
 }
+
+export type {
+  RNPDigitalPersonasInmueblesResponse,
+  RNPDigitalInmueblesResponse,
+  RNPDigitalMueblesResponse,
+  RNPDigitalMuebleDetalleResponse,
+};
