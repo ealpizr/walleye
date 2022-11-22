@@ -191,8 +191,9 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
             fechaInscripcion: v.fechaInscripcion,
             montoValorHacienda: v.montoValorHacienda.toString(),
             descripcionCodigoBien: v.tipoCodigo.descripcionCodigoBien,
-            numeroAgnoFabricacion: v.vehiculo[0]?.numeroAgnoFabricacion || "",
-            codigoClaseBien: v.vehiculo[0]?.codigoClaseBien || "",
+            numeroAgnoFabricacion:
+              v.vehiculo[0]?.numeroAgnoFabricacion.toString() || "",
+            // codigoClaseBien: v.vehiculo[0]?.codigoClaseBien || "",
             numeroChasis: v.vehiculo[0]?.numeroChasis || "",
             descripcionEstilo: v.vehiculo[0]?.descripcionEstilo || "",
             descripcionColor: v.vehiculo[0]?.tipoColor.descripcionColor || "",

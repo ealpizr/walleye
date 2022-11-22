@@ -76,6 +76,8 @@ export interface RNPMueble {
   fechaInscripcion: string;
   montoValorHacienda: string;
   descripcionCodigoBien: string;
+  numeroAgnoFabricacion: string;
+  numeroChasis: string;
   descripcionEstilo: string;
   descripcionColor: string;
   descripcionMarca: string;
