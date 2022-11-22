@@ -5,15 +5,18 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import CCSSInformation from "../components/CCSSInformation";
 import MHInformation from "../components/MHInformation";
+import RNPInformation from "../components/RNPInformation";
 import TSEInformation from "../components/TSEInformation";
 import { CCSSService, MHService, TSEService } from "../services";
-import type { CCSSData, MHData, TSEData } from "../types";
+import RNPService from "../services/rnp";
+import type { CCSSData, MHData, RNPData, TSEData } from "../types";
 import { isValidID } from "../utils";
 
 interface Data {
   tse: TSEData;
   mh: MHData;
   ccss: CCSSData;
+  rnp: RNPData;
 }
 
 const Result = () => {
@@ -34,7 +37,8 @@ const Result = () => {
         const tseData = await TSEService.queryByID(id);
         const mhData = await MHService.queryByID(id);
         const ccssData = await CCSSService.queryByID(id);
-        setData({ tse: tseData, mh: mhData, ccss: ccssData });
+        const rnpData = await RNPService.queryByID(id);
+        setData({ tse: tseData, mh: mhData, ccss: ccssData, rnp: rnpData });
       } catch (error) {
         console.error(error);
         router.push("/");
@@ -60,6 +64,7 @@ const Result = () => {
                 <Tab>TSE</Tab>
                 <Tab>MH</Tab>
                 <Tab>CCSS</Tab>
+                <Tab>RNP</Tab>
               </TabList>
 
               <TabPanel>
@@ -70,6 +75,9 @@ const Result = () => {
               </TabPanel>
               <TabPanel>
                 <CCSSInformation data={data.ccss} />
+              </TabPanel>
+              <TabPanel>
+                <RNPInformation data={data.rnp} />
               </TabPanel>
             </Tabs>
           </div>
