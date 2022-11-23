@@ -54,7 +54,7 @@ const Result = () => {
       {!data ? (
         <div className="flex h-full flex-col items-center justify-center gap-10">
           <SyncLoader />
-          <p className="text-xl">Loading...</p>
+          <p className="text-xl">Recopilando información...</p>
         </div>
       ) : (
         <main className="flex flex-1 flex-col items-center  gap-4 bg-[#F1F4F9] p-6">

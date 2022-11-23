@@ -21,7 +21,7 @@ const Home = () => {
 
   const handleSearch = async () => {
     Swal.fire({
-      title: "Searching",
+      title: "Buscando personas...",
       heightAuto: false,
       allowOutsideClick: false,
       didOpen: () => {
@@ -102,7 +102,7 @@ const Home = () => {
               className="hidden rounded-md bg-[#0368FF] py-3 px-6 text-white md:block"
               onClick={handleSearch}
             >
-              Search
+              Buscar
             </button>
           </div>
         </label>
@@ -110,7 +110,7 @@ const Home = () => {
           className="rounded-md bg-[#0368FF] py-3 px-6 text-white md:hidden"
           onClick={handleSearch}
         >
-          Search
+          Buscar
         </button>
       </div>
     </main>

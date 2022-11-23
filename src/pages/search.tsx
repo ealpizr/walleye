@@ -25,7 +25,7 @@ const Search = () => {
 
   return (
     <main className="flex flex-1 flex-col items-center gap-8 bg-[#F1F4F9] p-4">
-      <h3 className="text-2xl md:text-3xl">Search results</h3>
+      <h3 className="text-2xl md:text-3xl">Resultados de Búsqueda</h3>
       <ul className="flex flex-col gap-2">
         {data.map((pi) => {
           return (
@@ -50,7 +50,7 @@ const PersonInfo = ({ personInfo }: { personInfo: PersonListInfo }) => {
       </div>
       {personInfo.deceased && (
         <p className="rounded-lg bg-red-500 py-1 px-2 text-xs font-bold text-white">
-          DECEASED
+          FALLECIDO
         </p>
       )}
       <BsArrowReturnRight className="invisible ml-2 text-[#778396] group-hover:visible" />
