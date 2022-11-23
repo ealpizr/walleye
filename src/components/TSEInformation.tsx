@@ -9,7 +9,7 @@ const TSEInformation = ({ data }: Props) => {
   return (
     <section className="flex h-full w-full max-w-[1000px] flex-col items-center gap-6 rounded-md bg-white p-6 shadow">
       <div className="flex w-full flex-col items-center gap-3">
-        <Head title="Informacion de la Persona" />
+        <Head title="Información de la Persona" />
         <Row>
           <Col title="Cédula">
             <p>{data.id}</p>
@@ -32,7 +32,7 @@ const TSEInformation = ({ data }: Props) => {
       </div>
 
       <div className="flex w-full flex-col items-center gap-3">
-        <Head title="Informacion de los Padres" />
+        <Head title="Información de los Padres" />
         <Row>
           <Col title="Cédula del padre">
             <p>{data.father.id}</p>

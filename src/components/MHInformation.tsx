@@ -9,12 +9,12 @@ const MHInformation = ({ data }: Props) => {
   return (
     <section className="flex h-full w-full max-w-[1000px] flex-col items-center gap-6 rounded-md bg-white p-6 shadow">
       <div className="flex w-full flex-col items-center gap-3">
-        <Head title="Situacion Tributaria" />
+        <Head title="Situación Tributaria" />
         <Row>
           <Col title="Estado">
             <p>{data.status}</p>
           </Col>
-          <Col title="Regimen">
+          <Col title="Régimen">
             <p>{data.regimen}</p>
           </Col>
           <Col title="Moroso">
@@ -34,7 +34,7 @@ const MHInformation = ({ data }: Props) => {
               {data.activities.map((a) => {
                 return (
                   <Row key={a.code}>
-                    <Col title="Codigo">
+                    <Col title="Código">
                       <p>{a.code}</p>
                     </Col>
                     <Col title="Actividad">

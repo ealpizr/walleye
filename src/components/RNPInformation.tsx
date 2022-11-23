@@ -22,7 +22,7 @@ const RNPInformation = ({ data }: Props) => {
                     <Col title="Marca">
                       <p>{c.descripcionMarca}</p>
                     </Col>
-                    <Col title="Año Fabricacion">
+                    <Col title="Año Fabricación">
                       <p>{c.numeroAgnoFabricacion}</p>
                     </Col>
                   </Row>
@@ -47,7 +47,7 @@ const RNPInformation = ({ data }: Props) => {
                       <Col title="Derecho">
                         <p>{f.derecho}</p>
                       </Col>
-                      <Col title="Canton">
+                      <Col title="Cantón">
                         <p>{f.canton}</p>
                       </Col>
                       <Col title="Distrito">
@@ -56,7 +56,7 @@ const RNPInformation = ({ data }: Props) => {
                       <Col title="Provincia">
                         <p>{f.provincia}</p>
                       </Col>
-                      <Col title="Numero">
+                      <Col title="Número">
                         <p>{f.numero}</p>
                       </Col>
                       <Col title="Medida">

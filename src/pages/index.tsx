@@ -71,9 +71,10 @@ const Home = () => {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 bg-[#F1F4F9]">
       <div className="flex w-full max-w-3xl flex-col items-center justify-between gap-8 md:flex-row">
-        <h3 className="text-right text-2xl md:text-5xl">
-          Search People &<br />
-          Public Records
+        <h3 className="text-center text-2xl md:text-right md:text-4xl">
+          Información de Registro Públicos
+          <br />
+          <span className="font-bold">En un solo lugar</span>
         </h3>
         <Image
           className="max-w-[320px] md:w-full"
