@@ -2,7 +2,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+import ccssLogo from "../assets/ccss.png";
+import mhLogo from "../assets/mh.png";
+import rnpLogo from "../assets/rnp.png";
+import tseLogo from "../assets/tse.png";
 import CCSSInformation from "../components/CCSSInformation";
 import MHInformation from "../components/MHInformation";
 import RNPInformation from "../components/RNPInformation";
@@ -61,10 +64,18 @@ const Result = () => {
           <div className="w-full max-w-[1000px]">
             <Tabs className="w-full">
               <TabList>
-                <Tab>TSE</Tab>
-                <Tab>MH</Tab>
-                <Tab>CCSS</Tab>
-                <Tab>RNP</Tab>
+                <Tab>
+                  <img className="max-h-[50px]" src={tseLogo.src} />
+                </Tab>
+                <Tab>
+                  <img className="max-h-[50px]" src={mhLogo.src} />
+                </Tab>
+                <Tab>
+                  <img className="max-h-[50px]" src={ccssLogo.src} />
+                </Tab>
+                <Tab>
+                  <img className="max-h-[50px]" src={rnpLogo.src} />
+                </Tab>
               </TabList>
 
               <TabPanel>

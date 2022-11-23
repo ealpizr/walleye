@@ -6,6 +6,8 @@ import "../styles/reset.css";
 
 import "../styles/globals.css";
 
+import "../styles/tabs.css";
+
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <Layout>
