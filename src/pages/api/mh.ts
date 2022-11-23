@@ -36,8 +36,8 @@ type Request = Override<
 interface Response {
   regimen: string;
   status: string;
-  inDebt: boolean;
-  hasIgnoredDeclarations: boolean;
+  inDebt: string;
+  hasIgnoredDeclarations: string;
   activities: {
     status: string;
     code: string;
@@ -80,12 +80,12 @@ const mh = async (req: Request, res: NextApiResponse<APIResponse>) => {
 
   res.status(200).json({
     regimen: body.regimen.descripcion,
-    status: body.situacion.estado === "Inscrito" ? "Active" : "Inactive",
-    inDebt: body.situacion.moroso === "SI",
-    hasIgnoredDeclarations: body.situacion.omiso === "SI",
+    status: body.situacion.estado,
+    inDebt: body.situacion.moroso,
+    hasIgnoredDeclarations: body.situacion.omiso,
     activities: body.actividades.map((a) => {
       return {
-        status: a.estado === "A" ? "Active" : "Inactive",
+        status: a.estado === "A" ? "Activo" : "Inactivo",
         code: a.codigo,
         name: a.descripcion,
       };
