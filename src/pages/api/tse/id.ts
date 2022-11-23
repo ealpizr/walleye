@@ -162,6 +162,14 @@ const id = async (
     return res.status(404).json({ message: "no records found" });
   }
 
+  if (data.father.id === "0") {
+    data.father.id = "NO REGISTRADO";
+  }
+
+  if (data.mother.id === "0") {
+    data.mother.id = "NO REGISTRADO";
+  }
+
   return res.status(200).json(data);
 };
 
