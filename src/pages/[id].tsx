@@ -26,6 +26,9 @@ const Result = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const [data, setData] = useState<Data | null>(null);
+  const [loading, setLoading] = useState<string>(
+    "Tribunal Supremo de Elecciones"
+  );
 
   useEffect(() => {
     // id is undefined on first render, breaking everything else. need to check it here
@@ -38,8 +41,11 @@ const Result = () => {
           throw new Error("The provided ID is invalid");
         }
         const tseData = await TSEService.queryByID(id);
+        setLoading("Ministerio de Hacienda");
         const mhData = await MHService.queryByID(id);
+        setLoading("Caja Costarricense de Seguro Social");
         const ccssData = await CCSSService.queryByID(id);
+        setLoading("Registro Nacional");
         const rnpData = await RNPService.queryByID(id);
         setData({ tse: tseData, mh: mhData, ccss: ccssData, rnp: rnpData });
       } catch (error) {
@@ -54,7 +60,10 @@ const Result = () => {
       {!data ? (
         <div className="flex h-full flex-col items-center justify-center gap-10">
           <SyncLoader />
-          <p className="text-xl">Recopilando información...</p>
+          <div className="text-center">
+            <p className="text-xl">Recopilando información...</p>
+            <p className="font-bold">{loading}</p>
+          </div>
         </div>
       ) : (
         <main className="flex flex-1 flex-col items-center  gap-4 bg-[#F1F4F9] p-6">
