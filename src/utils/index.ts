@@ -1,3 +1,5 @@
+import type { HTMLElement } from "node-html-parser";
+
 // Used to type the NextAPIRequest object
 export type Override<T1, T2> = Omit<T1, keyof T2> & T2;
 
@@ -25,4 +27,15 @@ export const parseCookies = (cookies: string): string => {
     .split(",")
     .map((c) => c.split(";")[0] || "")
     .join("; ");
+};
+
+export const getTSEPageValidations = (pageBody: HTMLElement) => {
+  const viewState = pageBody
+    .getElementById("__VIEWSTATE")
+    .getAttribute("value");
+  const eventValidation = pageBody
+    .getElementById("__EVENTVALIDATION")
+    .getAttribute("value");
+
+  return [viewState, eventValidation];
 };

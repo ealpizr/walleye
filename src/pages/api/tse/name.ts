@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parse } from "node-html-parser";
 import type { TSEData } from "../../../types";
-import type { Override } from "../../../utils";
+import { getTSEPageValidations, Override } from "../../../utils";
 import { parseParams } from "../../../utils";
 
 type Request = Override<
@@ -53,11 +53,13 @@ const id = async (
   const getCookie = await fetch(requestEndpoint);
   const sessionCookie = getCookie.headers.get("set-cookie") || "";
 
+  let [viewState, eventValidation] = getTSEPageValidations(
+    parse(await getCookie.text())
+  );
+
   const params = {
-    __VIEWSTATE:
-      "/wEPDwUKMTE5MDA1NjkyMGRkDLOKATPznmx9I9lbIMFKv03MaOOc0w1bamfOxJBoC0o=",
-    __EVENTVALIDATION:
-      "/wEdAAs/42GmxfoIA1Ax2hbYG924tTfNpOz0CH4vKngBfzxDIS2hNtLCXCKq92TKMjYS4CX24YOX6Ab2AoRRJXYcN6RPZrHMfDaOuX2c5DuODJSei2DFl2PkTbOZC6CPafAYm8pRl9ScBPfOFka6q0phNEL8twmUZ6F4j9mDkTAUvEdpjI9xyi8lOqgWkn57Bww75NShJ9OpgLV2di8vwMcGnnPAKp+hSpqDPVCqS6ldDro7ssek8vFqyuKhgnei+/PG4dmCycVW2TeTxF7bADBOc5Oj",
+    __VIEWSTATE: viewState,
+    __EVENTVALIDATION: eventValidation,
     __ASYNCPOST: "true",
     btnConsultarNombre: "Consultar",
     txtnombre: name,
