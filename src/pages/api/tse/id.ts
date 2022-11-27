@@ -201,7 +201,7 @@ const id = async (
   };
 
   // RESPONSE
-  const data = {
+  const data: TSEData = {
     id: root.getElementById("lblcedula")?.innerText,
     idExpiration: electoralRoot.getElementById("lblvencimiento_cedula")
       ?.innerText,
