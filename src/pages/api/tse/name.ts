@@ -53,7 +53,7 @@ const id = async (
   const getCookie = await fetch(requestEndpoint);
   const sessionCookie = getCookie.headers.get("set-cookie") || "";
 
-  let [viewState, eventValidation] = getTSEPageValidations(
+  const [viewState, eventValidation] = getTSEPageValidations(
     parse(await getCookie.text())
   );
 
