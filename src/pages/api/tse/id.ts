@@ -140,8 +140,71 @@ const id = async (
       };
     });
 
+  // ELECTORAL DATA
+  response = await fetch(TSE_SINGLE_RESULT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "User-Agent": "Mozilla/5.0", // this is required for some reason
+      Cookie: sessionCookie,
+    },
+    body: parseParams({
+      __VIEWSTATE: viewState,
+      __EVENTVALIDATION: eventValidation,
+      __ASYNCPOST: "true",
+      btnMostrarVotacion: "Mostrar",
+    }),
+  });
+
+  const votationRoot = parse(await response.text());
+  const updateData = votationRoot.lastChild.toString();
+
+  viewState = updateData.split("__VIEWSTATE|")[1]?.split("|")[0];
+  eventValidation = updateData.split("__EVENTVALIDATION|")[1]?.split("|")[0];
+
+  await fetch(TSE_SINGLE_RESULT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "User-Agent": "Mozilla/5.0", // this is required for some reason
+      Cookie: sessionCookie,
+    },
+    body: parseParams({
+      __VIEWSTATE: viewState,
+      __EVENTVALIDATION: eventValidation,
+      __ASYNCPOST: "true",
+      __EVENTTARGET: "Gridvotacion",
+      __EVENTARGUMENT: "Select$0",
+    }),
+  });
+
+  response = await fetch(
+    "https://servicioselectorales.tse.go.cr/chc/detalle_votacion.aspx",
+    {
+      method: "GET",
+      headers: {
+        Cookie: sessionCookie,
+      },
+    }
+  );
+
+  const electoralRoot = parse(await response.text());
+
+  const electoralData = {
+    provincia: electoralRoot.getElementById("lblprovincia")?.innerText,
+    canton: electoralRoot.getElementById("lblcanton")?.innerText,
+    distritoAdministrativo: electoralRoot.getElementById(
+      "lbldistrito_administrativo"
+    )?.innerText,
+    distritoElectoral: electoralRoot.getElementById("lbldistrito_electoral")
+      ?.innerText,
+  };
+
+  // RESPONSE
   const data = {
     id: root.getElementById("lblcedula")?.innerText,
+    idExpiration: electoralRoot.getElementById("lblvencimiento_cedula")
+      ?.innerText,
     name: root.getElementById("lblnombrecompleto")?.innerText,
     dateOfBirth: root.getElementById("lblfechaNacimiento")?.innerText,
     age: root.getElementById("lbledad")?.innerText,
@@ -156,6 +219,7 @@ const id = async (
     },
     children: children,
     marriages: marriages,
+    electoralData,
   };
 
   if (!data.id) {
