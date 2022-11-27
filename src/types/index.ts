@@ -7,10 +7,10 @@ import type {
 
 export interface TSEData {
   id: string;
+  idExpiration: string;
   name: string;
   dateOfBirth: string;
   age: string;
-  idExpiration?: string;
   deceased: boolean;
   father: {
     id: string;
@@ -29,6 +29,12 @@ export interface TSEData {
     date: string;
     type: string;
   }[];
+  electoralData: {
+    provincia: string;
+    canton: string;
+    distritoAdministrativo: string;
+    distritoElectoral: string;
+  };
 }
 
 export interface ErrorResponse {
