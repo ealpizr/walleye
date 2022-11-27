@@ -16,7 +16,7 @@
     "react-icons": "^4.6.0",
     "react-spinners": "^0.13.6",
     "react-tabs": "^5.1.0",
-    "sweetalert2": "^11.6.7",
+    "sweetalert2": "^11.4.8",
     "zod": "^3.18.0"
   },
   "devDependencies": {
