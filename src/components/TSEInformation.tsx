@@ -29,6 +29,25 @@ const TSEInformation = ({ data }: Props) => {
             )}
           </Col>
         </Row>
+        {data.electoralData.provincia && (
+          <Row>
+            <Col title="Vencimiento Cedula">
+              <p>{data.idExpiration}</p>
+            </Col>
+            <Col title="Provincia">
+              <p>{data.electoralData.provincia}</p>
+            </Col>
+            <Col title="Canton">
+              <p>{data.electoralData.canton}</p>
+            </Col>
+            <Col title="Distritio Administrativo">
+              <p>{data.electoralData.distritoAdministrativo}</p>
+            </Col>
+            <Col title="Distrito Electoral">
+              <p>{data.electoralData.distritoElectoral}</p>
+            </Col>
+          </Row>
+        )}
       </div>
 
       <div className="flex w-full flex-col items-center gap-3">
