@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ealpizr/walleye/main/public/walleye.svg">
+  <img src="https://raw.githubusercontent.com/ealpizr/walleye/main/public/walleye-blue.svg">
 </p>
 <h1 align="center">Walleye</h1>
 
@@ -12,7 +12,7 @@ Currently, the supported information platforms are:
 - Tribunal Supremo de Elecciones
 - Ministerio de Hacienda
 - Caja Costarricense Seguro Social
-- Registro Nacional **(Work in progress)**
+- Registro Nacional
 
 This project is hosted on Vercel and is available [here](https://walleye.ealpizar.com/).
 
