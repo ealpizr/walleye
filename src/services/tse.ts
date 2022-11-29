@@ -1,7 +1,8 @@
+import { clientEnv } from "../env/schema.mjs";
 import type { ErrorResponse, TSEData } from "../types";
 import { UNKNOWN_ERROR_MESSAGE } from "../utils/constants";
 
-const TSE_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/tse`;
+const TSE_API_URL = `${clientEnv.NEXT_PUBLIC_BASE_URL}/api/tse`;
 
 class TSEService {
   static queryByID = (id: string): Promise<TSEData> => {

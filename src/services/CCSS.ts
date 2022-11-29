@@ -1,3 +1,4 @@
+import { clientEnv } from "../env/schema.mjs";
 import type { CCSSData, ErrorResponse } from "../types";
 import { UNKNOWN_ERROR_MESSAGE } from "../utils/constants";
 
@@ -6,7 +7,7 @@ class CCSSService {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/ccss`,
+          `${clientEnv.NEXT_PUBLIC_BASE_URL}/api/ccss`,
           {
             method: "POST",
             headers: {
