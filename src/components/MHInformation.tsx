@@ -49,7 +49,7 @@ const MHInformation = ({ data }: Props) => {
             </div>
           ) : (
             <p className="w-full text-center">
-              No tiene actividades registrados
+              No tiene actividades registradas
             </p>
           )}
         </div>
