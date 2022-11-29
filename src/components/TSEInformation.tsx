@@ -1,9 +1,27 @@
+import { env } from "process";
+import { clientEnv } from "../env/schema.mjs";
 import type { TSEData } from "../types";
 import { Col, Head, Row } from "./display";
 
 interface Props {
   data: TSEData;
 }
+
+const getLinkFromID = (id: string) => {
+  const p = <p>{id}</p>;
+  if (id === "NO REGISTRADO") {
+    return p;
+  }
+
+  return (
+    <a
+      className="cursor-pointer underline transition-all hover:text-blue-500"
+      href={`${clientEnv.NEXT_PUBLIC_BASE_URL}/${id}`}
+    >
+      {p}
+    </a>
+  );
+};
 
 const TSEInformation = ({ data }: Props) => {
   return (
@@ -53,15 +71,11 @@ const TSEInformation = ({ data }: Props) => {
       <div className="flex w-full flex-col items-center gap-3">
         <Head title="Información de los Padres" />
         <Row>
-          <Col title="Cédula del padre">
-            <p>{data.father.id}</p>
-          </Col>
+          <Col title="Cédula del padre">{getLinkFromID(data.father.id)}</Col>
           <Col title="Nombre del padre">
             <p>{data.father.name}</p>
           </Col>
-          <Col title="Cédula de la madre">
-            <p>{data.mother.id}</p>
-          </Col>
+          <Col title="Cédula de la madre">{getLinkFromID(data.mother.id)}</Col>
           <Col title="Nombre de la madre">
             <p>{data.mother.name}</p>
           </Col>
@@ -76,9 +90,7 @@ const TSEInformation = ({ data }: Props) => {
               {data.children.map((c) => {
                 return (
                   <Row key={c.id}>
-                    <Col title="Cédula">
-                      <p>{c.id}</p>
-                    </Col>
+                    <Col title="Cédula">{getLinkFromID(c.id)}</Col>
                     <Col title="Nombre completo">
                       <p>{c.name}</p>
                     </Col>
