@@ -1,11 +1,22 @@
+import { useEffect } from "react";
 import type { RNPData } from "../types";
 import { Col, Head, Row } from "./display";
+import Swal from "sweetalert2";
 
 interface Props {
   data: RNPData;
 }
 
 const RNPInformation = ({ data }: Props) => {
+  useEffect(() => {
+    Swal.fire({
+      icon: "warning",
+      html: '<strong>Los servicios de RNP Digital actualmente se encuentran en mantenimiento</strong><br/>(<a style="color: blue;" href="https://rn.rnpdigital.com/">rn.rnpdigital.com</a>)',
+      heightAuto: false,
+      allowOutsideClick: true,
+    });
+  }, []);
+
   return (
     <section className="flex h-full w-full max-w-[1000px] flex-col items-center gap-6 rounded-md bg-white p-6 shadow">
       <div className="flex w-full flex-col items-center gap-3">
