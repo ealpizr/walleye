@@ -86,7 +86,7 @@ const rnp = async (req: Request, res: NextApiResponse<APIResponse>) => {
   const root = parse(await tokenRequest.text());
 
   const commonBody = {
-    token: root.getElementById("tokenRegister").getAttribute("value") || "",
+    token: root.getElementById("tokenRegister")?.getAttribute("value") || "",
     userid: (await parseJSON(loginResponse)).data.idUsuario,
   };
 
