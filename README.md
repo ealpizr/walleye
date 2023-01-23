@@ -3,16 +3,16 @@
 </p>
 <h1 align="center">Walleye</h1>
 
-Walleye is an application that compiles people's information from Costa Rica's public records into a single place.
+Walleye is a convenient platform that consolidates Costa Rica's public records into one easily accessible app.
 
-You can query these records searching by a person's ID or full name.
+With the ability to search by a person's identification number or full name, users can quickly and efficiently access people's information.
 
 Currently, the supported information platforms are:
 
 - Tribunal Supremo de Elecciones
 - Ministerio de Hacienda
 - Caja Costarricense Seguro Social
-- Registro Nacional
+- Registro Nacional (At this time, [their website](https://rn.rnpdigital.com/) is currently undergoing maintenance)
 
 This project is hosted on Vercel and is available [here](https://walleye.ealpizar.com/).
 
